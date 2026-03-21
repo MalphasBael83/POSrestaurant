@@ -1124,6 +1124,11 @@ export default function App() {
         sb.from("tables").select("*").order("nummer").then(({ data }) => setTables(data || []));
       })
 
+      // MENU ITEMS — realtime toevoegen/wijzigen/verwijderen
+      .on("postgres_changes", { event: "*", schema: "public", table: "menu_items" }, () => {
+        sb.from("menu_items").select("*").order("id").then(({ data }) => setMenu(data || []));
+      })
+
       // BETALINGEN
       .on("postgres_changes", { event: "*", schema: "public", table: "payments" }, () => {
         sb.from("payments").select("*").order("timestamp").then(({ data }) => setPayments(data || []));
