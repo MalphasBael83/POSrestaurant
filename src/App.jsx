@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { createClient } from "@supabase/supabase-js";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 // ─── SUPABASE ─────────────────────────────────────────────────────────────────
 const SUPABASE_URL = "https://qkbuwavtxqpjfmksozls.supabase.co";
@@ -538,10 +538,22 @@ function KeukenScherm({ orders, tables }) {
 }
 
 // ─── EIGENAAR ─────────────────────────────────────────────────────────────────
+const CATEGORIEEN = ["Voorgerecht", "Hoofdgerecht", "Nagerecht", "Drank"];
+const CAT_EMOJI = { "Voorgerecht":"🥗", "Hoofdgerecht":"🍽️", "Nagerecht":"🍰", "Drank":"🥤" };
+
 function EigenaarScherm({ menu, onMenuUpdate }) {
   const [prices, setPrices] = useState({});
   const [opgeslagen, setOpgeslagen] = useState(false);
-  const cats = [...new Set(menu.map(m => m.categorie))];
+  const [toonForm, setToonForm] = useState(false);
+  const [nieuw, setNieuw] = useState({ naam:"", prijs:"", categorie:"Hoofdgerecht" });
+  const [bezig, setBezig] = useState(false);
+  const [melding, setMelding] = useState(null);
+  const cats = [...new Set([...CATEGORIEEN, ...menu.map(m => m.categorie)])];
+
+  function toonMelding(tekst, ok=true) {
+    setMelding({ tekst, ok });
+    setTimeout(() => setMelding(null), 2500);
+  }
 
   async function opslaan() {
     const updates = Object.entries(prices).map(([id, prijs]) =>
@@ -554,24 +566,112 @@ function EigenaarScherm({ menu, onMenuUpdate }) {
     setTimeout(() => setOpgeslagen(false), 2000);
   }
 
+  async function voegToe() {
+    if (!nieuw.naam.trim() || !nieuw.prijs) return;
+    setBezig(true);
+    const { error } = await sb.from("menu_items").insert({
+      naam: nieuw.naam.trim(),
+      prijs: parseFloat(nieuw.prijs),
+      categorie: nieuw.categorie,
+    });
+    if (error) { toonMelding("Fout: " + error.message, false); }
+    else {
+      onMenuUpdate();
+      setNieuw({ naam:"", prijs:"", categorie:"Hoofdgerecht" });
+      setToonForm(false);
+      toonMelding(`✅ ${nieuw.naam} toegevoegd!`);
+    }
+    setBezig(false);
+  }
+
+  async function verwijder(item) {
+    if (!confirm(`"${item.naam}" verwijderen?`)) return;
+    const { error } = await sb.from("menu_items").delete().eq("id", item.id);
+    if (error) { toonMelding("Fout: " + error.message, false); }
+    else { onMenuUpdate(); toonMelding(`🗑️ ${item.naam} verwijderd`); }
+  }
+
   return (
     <div className="content pb">
-      {opgeslagen && <div className="card slideup" style={{background:"#d4edda",color:"#155724",textAlign:"center",fontWeight:700}}>✅ Prijzen opgeslagen!</div>}
-      {cats.map(cat => (
-        <div key={cat} className="card slideup">
-          <h2 className="card-title">{cat}</h2>
-          {menu.filter(m => m.categorie===cat).map(item => (
-            <div key={item.id} className="menu-edit-row">
-              <span className="edit-name">{item.naam}</span>
-              <span style={{color:"var(--muted)",fontSize:".8rem"}}>€</span>
-              <input className="price-input" type="number" step="0.5" min="0"
-                value={prices[item.id]!==undefined ? prices[item.id] : item.prijs}
-                onChange={e => setPrices(p => ({...p,[item.id]:e.target.value}))} />
-            </div>
-          ))}
+      {melding && (
+        <div className="card slideup" style={{background: melding.ok?"#d4edda":"#ffe0e0", color: melding.ok?"#155724":"#c0392b", textAlign:"center", fontWeight:700}}>
+          {melding.tekst}
         </div>
-      ))}
-      <button className="btn btn-success" onClick={opslaan} disabled={Object.keys(prices).length===0}>💾 Prijzen opslaan</button>
+      )}
+      {opgeslagen && !melding && (
+        <div className="card slideup" style={{background:"#d4edda",color:"#155724",textAlign:"center",fontWeight:700}}>✅ Prijzen opgeslagen!</div>
+      )}
+
+      {/* NIEUW GERECHT TOEVOEGEN */}
+      <div className="card slideup">
+        <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom: toonForm ? 14 : 0}}>
+          <h2 className="card-title" style={{marginBottom:0}}>➕ Gerecht toevoegen</h2>
+          <button className="btn btn-primary btn-sm" onClick={() => setToonForm(v => !v)}>
+            {toonForm ? "Sluiten" : "Nieuw"}
+          </button>
+        </div>
+
+        {toonForm && (
+          <div style={{display:"flex", flexDirection:"column", gap:10, marginTop:4}}>
+            <input
+              placeholder="Naam (bv. 🍟 Frietjes)"
+              value={nieuw.naam}
+              onChange={e => setNieuw(p => ({...p, naam: e.target.value}))}
+              style={{padding:"10px 14px", border:"2px solid #e0e0e0", borderRadius:12, fontFamily:"'Nunito',sans-serif", fontSize:"0.95rem", width:"100%"}}
+            />
+            <div style={{display:"flex", gap:8}}>
+              <div style={{position:"relative", flex:1}}>
+                <span style={{position:"absolute", left:12, top:"50%", transform:"translateY(-50%)", color:"var(--muted)", fontWeight:700}}>€</span>
+                <input
+                  type="number" step="0.5" min="0" placeholder="0.00"
+                  value={nieuw.prijs}
+                  onChange={e => setNieuw(p => ({...p, prijs: e.target.value}))}
+                  style={{padding:"10px 14px 10px 28px", border:"2px solid #e0e0e0", borderRadius:12, fontFamily:"'Nunito',sans-serif", fontSize:"0.95rem", width:"100%", fontWeight:800, color:"var(--orange)"}}
+                />
+              </div>
+              <select
+                value={nieuw.categorie}
+                onChange={e => setNieuw(p => ({...p, categorie: e.target.value}))}
+                style={{padding:"10px 12px", border:"2px solid #e0e0e0", borderRadius:12, fontFamily:"'Nunito',sans-serif", fontSize:"0.85rem", fontWeight:700, background:"white", flex:1}}
+              >
+                {CATEGORIEEN.map(c => <option key={c} value={c}>{CAT_EMOJI[c]} {c}</option>)}
+              </select>
+            </div>
+            <button className="btn btn-success" onClick={voegToe} disabled={bezig || !nieuw.naam.trim() || !nieuw.prijs}>
+              {bezig ? "Bezig..." : "✅ Toevoegen"}
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* BESTAANDE ITEMS PER CATEGORIE */}
+      {cats.map(cat => {
+        const items = menu.filter(m => m.categorie===cat);
+        if (items.length === 0) return null;
+        return (
+          <div key={cat} className="card slideup">
+            <h2 className="card-title">{CAT_EMOJI[cat] || "🍴"} {cat}</h2>
+            {items.map(item => (
+              <div key={item.id} className="menu-edit-row">
+                <span className="edit-name">{item.naam}</span>
+                <span style={{color:"var(--muted)",fontSize:".8rem"}}>€</span>
+                <input className="price-input" type="number" step="0.5" min="0"
+                  value={prices[item.id]!==undefined ? prices[item.id] : item.prijs}
+                  onChange={e => setPrices(p => ({...p,[item.id]:e.target.value}))} />
+                <button
+                  onClick={() => verwijder(item)}
+                  style={{background:"none", border:"none", cursor:"pointer", fontSize:"1.1rem", padding:"4px", opacity:0.5}}
+                  title="Verwijderen"
+                >🗑️</button>
+              </div>
+            ))}
+          </div>
+        );
+      })}
+
+      <button className="btn btn-success" onClick={opslaan} disabled={Object.keys(prices).length===0}>
+        💾 Prijzen opslaan
+      </button>
     </div>
   );
 }
