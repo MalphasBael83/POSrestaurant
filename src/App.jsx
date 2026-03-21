@@ -348,22 +348,22 @@ function Home({ onKiesRol }) {
   return (
     <div className="home" style={{position:"relative", overflow:"hidden"}}>
 
-      {/* Vork links — gecentreerd in ruimte links van de knoppen */}
-      <svg width="90" height="600" viewBox="0 0 90 600" xmlns="http://www.w3.org/2000/svg"
-        style={{position:"absolute", left:"calc(50% - 220px)", top:"50%", transform:"translateY(-50%)", opacity:0.25}}>
-        <line x1="25" y1="30" x2="25" y2="140" stroke="white" strokeWidth="7" strokeLinecap="round"/>
-        <line x1="45" y1="30" x2="45" y2="140" stroke="white" strokeWidth="7" strokeLinecap="round"/>
-        <line x1="65" y1="30" x2="65" y2="140" stroke="white" strokeWidth="7" strokeLinecap="round"/>
-        <path d="M25,140 Q25,185 45,195 Q65,185 65,140" fill="none" stroke="white" strokeWidth="7" strokeLinecap="round"/>
-        <line x1="45" y1="195" x2="45" y2="570" stroke="white" strokeWidth="7" strokeLinecap="round"/>
+      {/* Vork links — midden tussen schermrand en knoppen */}
+      <svg width="60" height="100%" viewBox="0 0 60 800" xmlns="http://www.w3.org/2000/svg"
+        style={{position:"absolute", left:"calc(50% - 250px)", transform:"translateX(-50%)", top:0, height:"100%", opacity:0.3}}>
+        <line x1="12" y1="40" x2="12" y2="180" stroke="white" strokeWidth="6" strokeLinecap="round"/>
+        <line x1="30" y1="40" x2="30" y2="180" stroke="white" strokeWidth="6" strokeLinecap="round"/>
+        <line x1="48" y1="40" x2="48" y2="180" stroke="white" strokeWidth="6" strokeLinecap="round"/>
+        <path d="M12,180 Q12,225 30,238 Q48,225 48,180" fill="none" stroke="white" strokeWidth="6" strokeLinecap="round"/>
+        <line x1="30" y1="238" x2="30" y2="760" stroke="white" strokeWidth="6" strokeLinecap="round"/>
       </svg>
 
-      {/* Mes rechts — gecentreerd in ruimte rechts van de knoppen */}
-      <svg width="90" height="600" viewBox="0 0 90 600" xmlns="http://www.w3.org/2000/svg"
-        style={{position:"absolute", right:"calc(50% - 220px)", top:"50%", transform:"translateY(-50%)", opacity:0.25}}>
-        <path d="M55,30 Q80,30 80,120 Q80,175 45,190" fill="none" stroke="white" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round"/>
-        <line x1="55" y1="30" x2="45" y2="190" stroke="white" strokeWidth="7" strokeLinecap="round"/>
-        <line x1="45" y1="190" x2="45" y2="570" stroke="white" strokeWidth="7" strokeLinecap="round"/>
+      {/* Mes rechts — midden tussen knoppen en schermrand */}
+      <svg width="60" height="100%" viewBox="0 0 60 800" xmlns="http://www.w3.org/2000/svg"
+        style={{position:"absolute", right:"calc(50% - 250px)", transform:"translateX(50%)", top:0, height:"100%", opacity:0.3}}>
+        <path d="M46,40 Q58,40 58,150 Q58,210 30,228" fill="none" stroke="white" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round"/>
+        <line x1="46" y1="40" x2="30" y2="228" stroke="white" strokeWidth="6" strokeLinecap="round"/>
+        <line x1="30" y1="228" x2="30" y2="760" stroke="white" strokeWidth="6" strokeLinecap="round"/>
       </svg>
 
       <Logo />
