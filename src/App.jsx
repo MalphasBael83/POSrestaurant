@@ -346,7 +346,32 @@ function Logo() {
 
 function Home({ onKiesRol }) {
   return (
-    <div className="home">
+    <div className="home" style={{position:"relative", overflow:"hidden"}}>
+
+      {/* Vork links */}
+      <svg width="60" height="420" viewBox="0 0 60 420" xmlns="http://www.w3.org/2000/svg"
+        style={{position:"absolute", left:0, top:"50%", transform:"translateY(-50%)", opacity:0.18}}>
+        {/* Tanden */}
+        <line x1="18" y1="20" x2="18" y2="100" stroke="white" strokeWidth="5" strokeLinecap="round"/>
+        <line x1="30" y1="20" x2="30" y2="100" stroke="white" strokeWidth="5" strokeLinecap="round"/>
+        <line x1="42" y1="20" x2="42" y2="100" stroke="white" strokeWidth="5" strokeLinecap="round"/>
+        {/* Verbinding tanden */}
+        <path d="M18,100 Q18,130 30,135 Q42,130 42,100" fill="none" stroke="white" strokeWidth="5" strokeLinecap="round"/>
+        {/* Steel */}
+        <line x1="30" y1="135" x2="30" y2="400" stroke="white" strokeWidth="5" strokeLinecap="round"/>
+      </svg>
+
+      {/* Mes rechts */}
+      <svg width="60" height="420" viewBox="0 0 60 420" xmlns="http://www.w3.org/2000/svg"
+        style={{position:"absolute", right:0, top:"50%", transform:"translateY(-50%)", opacity:0.18}}>
+        {/* Kling */}
+        <path d="M38,20 Q52,20 52,80 Q52,120 30,130" fill="none" stroke="white" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round"/>
+        {/* Rug van mes recht */}
+        <line x1="38" y1="20" x2="30" y2="130" stroke="white" strokeWidth="5" strokeLinecap="round"/>
+        {/* Steel */}
+        <line x1="30" y1="130" x2="30" y2="400" stroke="white" strokeWidth="5" strokeLinecap="round"/>
+      </svg>
+
       <Logo />
       <h1 className="home-title" style={{marginTop:-20}}>Resto Junior</h1>
       <p className="home-sub">Kies je rol en aan de slag!</p>
