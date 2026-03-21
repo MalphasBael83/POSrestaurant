@@ -348,9 +348,9 @@ function Home({ onKiesRol }) {
   return (
     <div className="home" style={{position:"relative", overflow:"hidden"}}>
 
-      {/* Vork links */}
+      {/* Vork links — gecentreerd in ruimte links van de knoppen */}
       <svg width="90" height="600" viewBox="0 0 90 600" xmlns="http://www.w3.org/2000/svg"
-        style={{position:"absolute", left:-10, top:"50%", transform:"translateY(-50%)", opacity:0.22}}>
+        style={{position:"absolute", left:"calc(50% - 220px)", top:"50%", transform:"translateY(-50%)", opacity:0.25}}>
         <line x1="25" y1="30" x2="25" y2="140" stroke="white" strokeWidth="7" strokeLinecap="round"/>
         <line x1="45" y1="30" x2="45" y2="140" stroke="white" strokeWidth="7" strokeLinecap="round"/>
         <line x1="65" y1="30" x2="65" y2="140" stroke="white" strokeWidth="7" strokeLinecap="round"/>
@@ -358,9 +358,9 @@ function Home({ onKiesRol }) {
         <line x1="45" y1="195" x2="45" y2="570" stroke="white" strokeWidth="7" strokeLinecap="round"/>
       </svg>
 
-      {/* Mes rechts */}
+      {/* Mes rechts — gecentreerd in ruimte rechts van de knoppen */}
       <svg width="90" height="600" viewBox="0 0 90 600" xmlns="http://www.w3.org/2000/svg"
-        style={{position:"absolute", right:-10, top:"50%", transform:"translateY(-50%)", opacity:0.22}}>
+        style={{position:"absolute", right:"calc(50% - 220px)", top:"50%", transform:"translateY(-50%)", opacity:0.25}}>
         <path d="M55,30 Q80,30 80,120 Q80,175 45,190" fill="none" stroke="white" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round"/>
         <line x1="55" y1="30" x2="45" y2="190" stroke="white" strokeWidth="7" strokeLinecap="round"/>
         <line x1="45" y1="190" x2="45" y2="570" stroke="white" strokeWidth="7" strokeLinecap="round"/>
