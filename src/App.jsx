@@ -320,7 +320,7 @@ function PinTerminal({ totaal, correctPin, onSuccess, onClose }) {
 // ─── HOME ─────────────────────────────────────────────────────────────────────
 function Logo() {
   return (
-    <svg width="200" height="200" viewBox="0 0 680 360" xmlns="http://www.w3.org/2000/svg">
+    <svg width="280" height="280" viewBox="0 0 680 360" xmlns="http://www.w3.org/2000/svg">
       <circle cx="340" cy="178" r="130" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="2.5"/>
       <circle cx="340" cy="178" r="120" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="0.8"/>
       <circle cx="340" cy="178" r="119" fill="rgba(255,255,255,0.08)"/>
@@ -348,7 +348,7 @@ function Home({ onKiesRol }) {
   return (
     <div className="home">
       <Logo />
-      <h1 className="home-title">Resto Junior</h1>
+      <h1 className="home-title" style={{marginTop:-20}}>Resto Junior</h1>
       <p className="home-sub">Kies je rol en aan de slag!</p>
       <div className="role-grid">
         {[
