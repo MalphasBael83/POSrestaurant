@@ -93,8 +93,8 @@ const style = `
   .home-sub { color:rgba(255,255,255,.7); font-size:1rem; text-align:center; margin-top:-10px; }
   .home-emoji { font-size:4rem; margin-bottom:10px; }
   .role-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; width:100%; max-width:340px; margin-top:20px; }
-  .role-card { background:rgba(255,255,255,.08); border:2px solid rgba(255,255,255,.15); border-radius:var(--radius); padding:28px 16px; text-align:center; cursor:pointer; transition:all .2s; color:white; }
-  .role-card:hover,.role-card:active { transform:scale(1.05); border-color:var(--yellow); background:rgba(255,217,61,.15); }
+  .role-card { background:linear-gradient(160deg,#1a1a2e 0%,#16213e 60%,#0f3460 100%); border:2px solid rgba(255,255,255,.2); border-radius:var(--radius); padding:28px 16px; text-align:center; cursor:pointer; transition:all .2s; color:white; }
+  .role-card:hover,.role-card:active { transform:scale(1.05); border-color:var(--yellow); background:linear-gradient(160deg,#1a1a2e 0%,#16213e 60%,#0f3460 100%); }
   .role-card .icon { font-size:2.4rem; margin-bottom:10px; }
   .role-card .label { font-family:'Fredoka One',cursive; font-size:1.1rem; }
   .role-card.ober { border-color:rgba(77,150,255,.4); }
