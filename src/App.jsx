@@ -541,11 +541,174 @@ function KeukenScherm({ orders, tables }) {
 const CATEGORIEEN = ["Voorgerecht", "Hoofdgerecht", "Nagerecht", "Drank"];
 const CAT_EMOJI = { "Voorgerecht":"🥗", "Hoofdgerecht":"🍽️", "Nagerecht":"🍰", "Drank":"🥤" };
 
+// Zoekt automatisch een passende emoji op basis van de naam
+const EMOJI_MAP = [
+  // ── VLEES ──
+  { woorden:["hamburger","burger","cheeseburger"], emoji:"🍔" },
+  { woorden:["hotdog","hot dog","worst","braadworst","knakworst","frankfurter"], emoji:"🌭" },
+  { woorden:["kip","chicken","nugget","nuggets","kipvleugel","vleugel","wing","drumstick","popcornkip"], emoji:"🍗" },
+  { woorden:["biefstuk","steak","entrecote","ribeye","ossenhaas","haasbiefstuk","varkenshaas"], emoji:"🥩" },
+  { woorden:["vlees","vleesschotel"], emoji:"🥩" },
+  { woorden:["spek","bacon","pancetta"], emoji:"🥓" },
+  { woorden:["schnitzel","karbonade","kotelet","lamsrack","lam","lamskotelet"], emoji:"🍖" },
+  { woorden:["kebab","döner","shoarma","shawarma","gyros","kofta"], emoji:"🥙" },
+  { woorden:["taco"], emoji:"🌮" },
+  { woorden:["burrito","quesadilla","fajita","enchilada"], emoji:"🌯" },
+  { woorden:["gehaktbal","gehakt","slavink","fricandel","kroket"], emoji:"🍖" },
+  { woorden:["eend","eendenborst","confit"], emoji:"🍖" },
+  { woorden:["kalkoen","turkey"], emoji:"🍗" },
+  { woorden:["konijn","haas","wild","hert","ree","everzwijn"], emoji:"🍖" },
+  // ── VIS & ZEEVRUCHTEN ──
+  { woorden:["zalm","salmon","forel","baars","kabeljauw","tilapia","zeebaars","tarbot","heilbot","vis","fish","tonijn","tuna","haring","maatje","ansjovis","sardine"], emoji:"🐟" },
+  { woorden:["sushi","sashimi","maki","nigiri","temaki"], emoji:"🍣" },
+  { woorden:["garnaal","garnalen","shrimp","prawns"], emoji:"🍤" },
+  { woorden:["kreeft","lobster"], emoji:"🦞" },
+  { woorden:["krab","crab","surimi","krabstick"], emoji:"🦀" },
+  { woorden:["inktvis","calamari","octopus"], emoji:"🦑" },
+  { woorden:["mossel","mosselen","oester","oesters"], emoji:"🦪" },
+  { woorden:["visstick","fishstick"], emoji:"🐟" },
+  // ── PIZZA & PASTA ──
+  { woorden:["pizza","margherita","quattro","calzone","pinsa"], emoji:"🍕" },
+  { woorden:["pasta","spaghetti","lasagne","macaroni","penne","fusilli","tagliatelle","fettuccine","linguine","rigatoni","gnocchi","ravioli","tortellini","carbonara","bolognese","arrabiata","pesto","alfredo"], emoji:"🍝" },
+  { woorden:["noodle","noedel","ramen","udon","soba","vermicelli","mie","bami","pad thai","pho"], emoji:"🍜" },
+  { woorden:["risotto"], emoji:"🍚" },
+  // ── BROOD & SANDWICHES ──
+  { woorden:["brood","toast","bruschetta"], emoji:"🍞" },
+  { woorden:["sandwich","boterham","belegd","club"], emoji:"🥪" },
+  { woorden:["tosti","grilled cheese","croque","panini"], emoji:"🥪" },
+  { woorden:["wrap","tortilla"], emoji:"🌯" },
+  { woorden:["bagel"], emoji:"🥯" },
+  { woorden:["croissant","brioche"], emoji:"🥐" },
+  { woorden:["baguette","stokbrood","ciabatta","focaccia"], emoji:"🥖" },
+  { woorden:["pita","pitabrood","naan","chapati","roti"], emoji:"🫓" },
+  // ── SNACKS & FRIET ──
+  { woorden:["friet","frietjes","patat","frites","pommes","patates"], emoji:"🍟" },
+  { woorden:["nachos","chips","tortillachips","popcorn"], emoji:"🍿" },
+  { woorden:["bitterballen","bitterbal","borrelplank","sate","satay","saté"], emoji:"🍢" },
+  { woorden:["loempia","springroll","dumpling","gyoza","wonton","samosa","empanada"], emoji:"🥟" },
+  { woorden:["falafel"], emoji:"🧆" },
+  { woorden:["hummus"], emoji:"🫘" },
+  { woorden:["tempura"], emoji:"🍤" },
+  { woorden:["spareribs","ribben","ribs"], emoji:"🍖" },
+  // ── EIEREN & ONTBIJT ──
+  { woorden:["ei","eieren","omelet","omelette","roerei","spiegelei","frittata"], emoji:"🍳" },
+  { woorden:["pannenkoek","pancake","crêpe","crepe"], emoji:"🥞" },
+  { woorden:["wafel","wafels"], emoji:"🧇" },
+  { woorden:["granola","muesli","havermout","pap","porridge"], emoji:"🥣" },
+  { woorden:["yoghurt","yogurt"], emoji:"🥛" },
+  // ── GROENTEN & SALADE ──
+  { woorden:["salade","sla","caesar","nicoise","waldorf","coleslaw"], emoji:"🥗" },
+  { woorden:["soep","bouillon","bisque","gazpacho","minestrone","tomatensoep","erwtensoep"], emoji:"🍲" },
+  { woorden:["stamppot","hutspot","hachee","zuurkool","boerenkool","stoofpot","stoofvlees","ragout","goulash","stew"], emoji:"🍲" },
+  { woorden:["ratatouille","roerbak","groenten","groente"], emoji:"🥦" },
+  { woorden:["broccoli","bloemkool","spruitjes"], emoji:"🥦" },
+  { woorden:["wortel","wortels","carrot"], emoji:"🥕" },
+  { woorden:["tomaat","tomaten"], emoji:"🍅" },
+  { woorden:["avocado","guacamole"], emoji:"🥑" },
+  { woorden:["komkommer"], emoji:"🥒" },
+  { woorden:["paprika","peper"], emoji:"🫑" },
+  { woorden:["maïs","mais","corn"], emoji:"🌽" },
+  { woorden:["champignon","paddenstoel","mushroom","truffle"], emoji:"🍄" },
+  { woorden:["ui","uien","sjalot"], emoji:"🧅" },
+  { woorden:["knoflook","look"], emoji:"🧄" },
+  { woorden:["spinazie","asperge","asperges"], emoji:"🥬" },
+  { woorden:["erwten","bonen","linzen"], emoji:"🫘" },
+  { woorden:["aardappel","aardappelen","potato","puree","gratin"], emoji:"🥔" },
+  // ── RIJST & AZIATISCH ──
+  { woorden:["rijst","nasi","basmati","jasmijn"], emoji:"🍚" },
+  { woorden:["curry","massaman","tikka","korma","dahl","dal"], emoji:"🍛" },
+  { woorden:["bibimbap","kimchi","bento","poke","bowl"], emoji:"🍱" },
+  { woorden:["tempeh","tofu"], emoji:"🥢" },
+  { woorden:["miso","edamame"], emoji:"🍵" },
+  { woorden:["paella","tagine","tajine"], emoji:"🥘" },
+  // ── KAAS ──
+  { woorden:["kaas","cheese","brie","camembert","gouda","cheddar","mozzarella","parmesan","feta","ricotta","gorgonzola","fondue","raclette"], emoji:"🧀" },
+  { woorden:["boter"], emoji:"🧈" },
+  // ── NAGERECHT & ZOET ──
+  { woorden:["ijs","ijsje","sorbet","gelato","parfait","sundae"], emoji:"🍨" },
+  { woorden:["softijs","softijsje"], emoji:"🍦" },
+  { woorden:["taart","cake","cheesecake","tiramisu","gebak","tart","tarte"], emoji:"🍰" },
+  { woorden:["chocolade","chocolat","choco","fondant","brownie"], emoji:"🍫" },
+  { woorden:["koek","cookie","biscuit","speculaas","stroopwafel"], emoji:"🍪" },
+  { woorden:["donut","doughnut","churros","beignet"], emoji:"🍩" },
+  { woorden:["muffin","cupcake"], emoji:"🧁" },
+  { woorden:["pudding","panna cotta","crème brûlée","mousse","custard","profiterole","eclair","soes"], emoji:"🍮" },
+  { woorden:["macaron","macaroon","snoep","candy","karamel","caramel","toffee"], emoji:"🍬" },
+  { woorden:["lolly"], emoji:"🍭" },
+  { woorden:["honing"], emoji:"🍯" },
+  { woorden:["jam","confiture"], emoji:"🍓" },
+  { woorden:["wafeltje","stroopwafeltje"], emoji:"🧇" },
+  // ── FRUIT ──
+  { woorden:["fruitsalade","fruit","mixed fruit"], emoji:"🍇" },
+  { woorden:["appel","apple"], emoji:"🍎" },
+  { woorden:["peer","pear"], emoji:"🍐" },
+  { woorden:["banaan","banana"], emoji:"🍌" },
+  { woorden:["aardbei","aardbeien","strawberry","framboos","frambozen"], emoji:"🍓" },
+  { woorden:["druiven","druif","grape"], emoji:"🍇" },
+  { woorden:["mango","papaya","guave","lychee","passievrucht"], emoji:"🥭" },
+  { woorden:["ananas","pineapple"], emoji:"🍍" },
+  { woorden:["watermeloen","melon","meloen"], emoji:"🍉" },
+  { woorden:["kiwi"], emoji:"🥝" },
+  { woorden:["citroen","lemon"], emoji:"🍋" },
+  { woorden:["sinaasappel","orange","mandarijn","clementine"], emoji:"🍊" },
+  { woorden:["kers","kersen","cherry"], emoji:"🍒" },
+  { woorden:["perzik","peach","nectarine","pruim","plum"], emoji:"🍑" },
+  { woorden:["blauwe bes","bosbes","blueberry"], emoji:"🫐" },
+  { woorden:["kokosnoot","kokos","coconut"], emoji:"🥥" },
+  // ── NOTEN ──
+  { woorden:["noten","noot","amandel","walnoot","cashew","pistache","pinda","hazelnoot","pecan","kastanje"], emoji:"🥜" },
+  { woorden:["pindakaas"], emoji:"🥜" },
+  // ── KOFFIE & THEE ──
+  { woorden:["koffie","coffee","espresso","cappuccino","latte","americano","lungo","macchiato","flat white","cold brew","iced coffee"], emoji:"☕" },
+  { woorden:["thee","tea","earl grey","groene thee","kamille","rooibos","chai","matcha"], emoji:"🍵" },
+  { woorden:["chocolademelk","warme chocolade","hot chocolate","chocomelk"], emoji:"☕" },
+  // ── DRANKEN KOUD ──
+  { woorden:["water","spa","mineraalwater","bruiswater"], emoji:"💧" },
+  { woorden:["cola","pepsi","fanta","sprite","7up","dr pepper"], emoji:"🥤" },
+  { woorden:["frisdrank","soda","sodawater","tonic"], emoji:"🥤" },
+  { woorden:["sap","juice","appelsap","sinaasappelsap","jus","vruchtensap","perssap"], emoji:"🧃" },
+  { woorden:["melk","halfvolle","magere","karnemelk"], emoji:"🥛" },
+  { woorden:["milkshake","shake","frappe"], emoji:"🥤" },
+  { woorden:["smoothie"], emoji:"🥤" },
+  { woorden:["limonade","siroop"], emoji:"🍋" },
+  { woorden:["ijsthee","ice tea","bubble tea","boba"], emoji:"🧋" },
+  { woorden:["energydrank","energy drink","red bull","monster"], emoji:"⚡" },
+  // ── DRANKEN ALCOHOLISCH ──
+  { woorden:["bier","pils","ale","lager","stout","ipa","weizen","tripel","dubbel","witbier","cider"], emoji:"🍺" },
+  { woorden:["wijn","wine","rosé","rose","sauvignon","merlot","cabernet","chardonnay","port","sherry","sangria"], emoji:"🍷" },
+  { woorden:["prosecco","champagne","cava","mousserende","sparkling"], emoji:"🥂" },
+  { woorden:["cocktail","mojito","daiquiri","margarita","cosmopolitan","aperol","spritz"], emoji:"🍹" },
+  { woorden:["whisky","whiskey","bourbon","scotch","rum","vodka","gin","tequila","cognac","brandy","jenever","borrel"], emoji:"🥃" },
+  { woorden:["sake"], emoji:"🍶" },
+  // ── SPECIALE ──
+  { woorden:["bbq","barbecue","grill","grillschotel"], emoji:"🔥" },
+  { woorden:["vegetarisch","vegan","plantaardig"], emoji:"🌱" },
+  { woorden:["dagschotel","dagmenu","dagsuggestie"], emoji:"⭐" },
+  { woorden:["kindermenu","kinder","kids"], emoji:"👶" },
+  { woorden:["chef","signature","special","speciale"], emoji:"👨‍🍳" },
+];
+
+function kiesEmoji(naam) {
+  if (!naam || !naam.trim()) return "🍴";
+  // Normaliseer: lowercase, verwijder accenten, verwijder leestekens
+  const lower = naam.toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // accenten weg
+    .replace(/[^a-z0-9\s]/g, " "); // leestekens naar spatie
+  for (const { woorden, emoji } of EMOJI_MAP) {
+    if (woorden.some(w => lower.includes(w.toLowerCase()
+      .normalize("NFD").replace(/[\u0300-\u036f]/g, "")))) {
+      return emoji;
+    }
+  }
+  return "🍴";
+}
+
 function EigenaarScherm({ menu, onMenuUpdate }) {
   const [prices, setPrices] = useState({});
   const [opgeslagen, setOpgeslagen] = useState(false);
   const [toonForm, setToonForm] = useState(false);
   const [nieuw, setNieuw] = useState({ naam:"", prijs:"", categorie:"Hoofdgerecht" });
+  const [autoEmoji, setAutoEmoji] = useState("🍴");
   const [bezig, setBezig] = useState(false);
   const [melding, setMelding] = useState(null);
   const cats = [...new Set([...CATEGORIEEN, ...menu.map(m => m.categorie)])];
@@ -553,6 +716,12 @@ function EigenaarScherm({ menu, onMenuUpdate }) {
   function toonMelding(tekst, ok=true) {
     setMelding({ tekst, ok });
     setTimeout(() => setMelding(null), 2500);
+  }
+
+  function handleNaamChange(e) {
+    const naam = e.target.value;
+    setNieuw(p => ({...p, naam}));
+    setAutoEmoji(kiesEmoji(naam));
   }
 
   async function opslaan() {
@@ -569,8 +738,9 @@ function EigenaarScherm({ menu, onMenuUpdate }) {
   async function voegToe() {
     if (!nieuw.naam.trim() || !nieuw.prijs) return;
     setBezig(true);
+    const naamMetEmoji = `${autoEmoji} ${nieuw.naam.trim()}`;
     const { error } = await sb.from("menu_items").insert({
-      naam: nieuw.naam.trim(),
+      naam: naamMetEmoji,
       prijs: parseFloat(nieuw.prijs),
       categorie: nieuw.categorie,
     });
@@ -578,8 +748,9 @@ function EigenaarScherm({ menu, onMenuUpdate }) {
     else {
       onMenuUpdate();
       setNieuw({ naam:"", prijs:"", categorie:"Hoofdgerecht" });
+      setAutoEmoji("🍴");
       setToonForm(false);
-      toonMelding(`✅ ${nieuw.naam} toegevoegd!`);
+      toonMelding(`✅ ${naamMetEmoji} toegevoegd!`);
     }
     setBezig(false);
   }
@@ -613,12 +784,28 @@ function EigenaarScherm({ menu, onMenuUpdate }) {
 
         {toonForm && (
           <div style={{display:"flex", flexDirection:"column", gap:10, marginTop:4}}>
-            <input
-              placeholder="Naam (bv. 🍟 Frietjes)"
-              value={nieuw.naam}
-              onChange={e => setNieuw(p => ({...p, naam: e.target.value}))}
-              style={{padding:"10px 14px", border:"2px solid #e0e0e0", borderRadius:12, fontFamily:"'Nunito',sans-serif", fontSize:"0.95rem", width:"100%"}}
-            />
+            {/* Emoji preview + naam input */}
+            <div style={{display:"flex", gap:8, alignItems:"center"}}>
+              <div style={{
+                width:56, height:56, borderRadius:14, background: autoEmoji === "🍴" ? "#f5f5f5" : "#fff8f0",
+                display:"flex", alignItems:"center", justifyContent:"center",
+                fontSize:"2rem", flexShrink:0,
+                border: autoEmoji === "🍴" ? "2px solid #e0e0e0" : "2px solid var(--orange)",
+                transition:"all 0.25s",
+              }}>
+                {autoEmoji}
+              </div>
+              <input
+                placeholder="Naam (bv. Frietjes)"
+                value={nieuw.naam}
+                onChange={handleNaamChange}
+                autoFocus
+                style={{padding:"10px 14px", border:"2px solid #e0e0e0", borderRadius:12, fontFamily:"'Nunito',sans-serif", fontSize:"0.95rem", width:"100%", fontWeight:700}}
+              />
+            </div>
+            <div style={{fontSize:"0.72rem", color: autoEmoji === "🍴" ? "var(--muted)" : "var(--orange)", marginTop:-4, fontWeight: autoEmoji === "🍴" ? 400 : 700}}>
+              {autoEmoji === "🍴" ? "Typ een naam — emoji verschijnt automatisch" : `${autoEmoji} Herkend! Emoji wordt automatisch toegevoegd`}
+            </div>
             <div style={{display:"flex", gap:8}}>
               <div style={{position:"relative", flex:1}}>
                 <span style={{position:"absolute", left:12, top:"50%", transform:"translateY(-50%)", color:"var(--muted)", fontWeight:700}}>€</span>
@@ -638,7 +825,7 @@ function EigenaarScherm({ menu, onMenuUpdate }) {
               </select>
             </div>
             <button className="btn btn-success" onClick={voegToe} disabled={bezig || !nieuw.naam.trim() || !nieuw.prijs}>
-              {bezig ? "Bezig..." : "✅ Toevoegen"}
+              {bezig ? "Bezig..." : `${autoEmoji} Toevoegen`}
             </button>
           </div>
         )}
