@@ -318,10 +318,36 @@ function PinTerminal({ totaal, correctPin, onSuccess, onClose }) {
 }
 
 // ─── HOME ─────────────────────────────────────────────────────────────────────
+function Logo() {
+  return (
+    <svg width="200" height="200" viewBox="0 0 680 360" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="340" cy="178" r="130" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="2.5"/>
+      <circle cx="340" cy="178" r="120" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="0.8"/>
+      <circle cx="340" cy="178" r="119" fill="rgba(255,255,255,0.08)"/>
+      <path id="topArcH" d="M 230,178 A 110,110 0 0,1 450,178" fill="none"/>
+      <text fontFamily="'Georgia', serif" fontSize="11.5" letterSpacing="5.5" fill="rgba(255,255,255,0.6)">
+        <textPath href="#topArcH" startOffset="50%" textAnchor="middle">✦  R E S T A U R A N T  ✦</textPath>
+      </text>
+      <path id="botArcH" d="M 230,178 A 110,110 0 0,0 450,178" fill="none"/>
+      <text fontFamily="'Georgia', serif" fontSize="11" letterSpacing="4" fill="#FF6B35">
+        <textPath href="#botArcH" startOffset="50%" textAnchor="middle">J U N I O R</textPath>
+      </text>
+      <line x1="258" y1="122" x2="422" y2="122" stroke="rgba(255,255,255,0.3)" strokeWidth="0.7"/>
+      <line x1="258" y1="234" x2="422" y2="234" stroke="rgba(255,255,255,0.3)" strokeWidth="0.7"/>
+      <polygon points="340,116 344,122 340,128 336,122" fill="#FF6B35"/>
+      <polygon points="340,228 344,234 340,240 336,234" fill="#FF6B35"/>
+      <text x="268" y="218" fontFamily="'Georgia', serif" fontSize="108" fontWeight="700" fill="#FF6B35">N</text>
+      <text x="340" y="218" fontFamily="'Georgia', serif" fontSize="108" fontWeight="700" fill="#4D96FF">K</text>
+      <circle cx="263" cy="178" r="3" fill="#FF6B35" opacity="0.7"/>
+      <circle cx="417" cy="178" r="3" fill="#4D96FF" opacity="0.7"/>
+    </svg>
+  );
+}
+
 function Home({ onKiesRol }) {
   return (
     <div className="home">
-      <div style={{fontSize:"4rem"}}>🍽️</div>
+      <Logo />
       <h1 className="home-title">Resto Junior</h1>
       <p className="home-sub">Kies je rol en aan de slag!</p>
       <div className="role-grid">
