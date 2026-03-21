@@ -349,27 +349,21 @@ function Home({ onKiesRol }) {
     <div className="home" style={{position:"relative", overflow:"hidden"}}>
 
       {/* Vork links */}
-      <svg width="60" height="420" viewBox="0 0 60 420" xmlns="http://www.w3.org/2000/svg"
-        style={{position:"absolute", left:0, top:"50%", transform:"translateY(-50%)", opacity:0.18}}>
-        {/* Tanden */}
-        <line x1="18" y1="20" x2="18" y2="100" stroke="white" strokeWidth="5" strokeLinecap="round"/>
-        <line x1="30" y1="20" x2="30" y2="100" stroke="white" strokeWidth="5" strokeLinecap="round"/>
-        <line x1="42" y1="20" x2="42" y2="100" stroke="white" strokeWidth="5" strokeLinecap="round"/>
-        {/* Verbinding tanden */}
-        <path d="M18,100 Q18,130 30,135 Q42,130 42,100" fill="none" stroke="white" strokeWidth="5" strokeLinecap="round"/>
-        {/* Steel */}
-        <line x1="30" y1="135" x2="30" y2="400" stroke="white" strokeWidth="5" strokeLinecap="round"/>
+      <svg width="90" height="600" viewBox="0 0 90 600" xmlns="http://www.w3.org/2000/svg"
+        style={{position:"absolute", left:-10, top:"50%", transform:"translateY(-50%)", opacity:0.22}}>
+        <line x1="25" y1="30" x2="25" y2="140" stroke="white" strokeWidth="7" strokeLinecap="round"/>
+        <line x1="45" y1="30" x2="45" y2="140" stroke="white" strokeWidth="7" strokeLinecap="round"/>
+        <line x1="65" y1="30" x2="65" y2="140" stroke="white" strokeWidth="7" strokeLinecap="round"/>
+        <path d="M25,140 Q25,185 45,195 Q65,185 65,140" fill="none" stroke="white" strokeWidth="7" strokeLinecap="round"/>
+        <line x1="45" y1="195" x2="45" y2="570" stroke="white" strokeWidth="7" strokeLinecap="round"/>
       </svg>
 
       {/* Mes rechts */}
-      <svg width="60" height="420" viewBox="0 0 60 420" xmlns="http://www.w3.org/2000/svg"
-        style={{position:"absolute", right:0, top:"50%", transform:"translateY(-50%)", opacity:0.18}}>
-        {/* Kling */}
-        <path d="M38,20 Q52,20 52,80 Q52,120 30,130" fill="none" stroke="white" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round"/>
-        {/* Rug van mes recht */}
-        <line x1="38" y1="20" x2="30" y2="130" stroke="white" strokeWidth="5" strokeLinecap="round"/>
-        {/* Steel */}
-        <line x1="30" y1="130" x2="30" y2="400" stroke="white" strokeWidth="5" strokeLinecap="round"/>
+      <svg width="90" height="600" viewBox="0 0 90 600" xmlns="http://www.w3.org/2000/svg"
+        style={{position:"absolute", right:-10, top:"50%", transform:"translateY(-50%)", opacity:0.22}}>
+        <path d="M55,30 Q80,30 80,120 Q80,175 45,190" fill="none" stroke="white" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round"/>
+        <line x1="55" y1="30" x2="45" y2="190" stroke="white" strokeWidth="7" strokeLinecap="round"/>
+        <line x1="45" y1="190" x2="45" y2="570" stroke="white" strokeWidth="7" strokeLinecap="round"/>
       </svg>
 
       <Logo />
