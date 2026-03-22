@@ -1132,6 +1132,7 @@ export default function App() {
 
   // ── Notificaties ──
   const [notif, setNotif] = useState(null);
+  const [lokaleNotif, setLokaleNotif] = useState(null);
   const prevOrdersRef = useRef([]);
 
   // ── Initieel laden ──
@@ -1239,8 +1240,7 @@ export default function App() {
 
   const nieuweBestellingen = orders.filter(o => o.status==="nieuw").length;
 
-  // Lokale notif state voor roep_ober (cross-device via emitNotif)
-  const [lokaleNotif, setLokaleNotif] = useState(null);
+  // Lokale notif listener voor roep_ober
   useEffect(() => {
     return onNotif((n) => {
       if (n.type === "roep_ober") speelRoepOberGeluid();
