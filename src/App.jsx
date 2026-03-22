@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { createClient } from "@supabase/supabase-js";
 
 // ─── SUPABASE ─────────────────────────────────────────────────────────────────
 const SUPABASE_URL = "https://qkbuwavtxqpjfmksozls.supabase.co";
@@ -61,6 +61,23 @@ function speelOberGeluid() {
       g.gain.linearRampToValueAtTime(0.35, t + 0.02);
       g.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
       o.start(t); o.stop(t + 0.45);
+    });
+  } catch(e) {}
+}
+
+function speelRoepOberGeluid() {
+  try {
+    const ctx = getAudio();
+    // Klassiek restaurantbelletje: drie snelle hoge tonen
+    [1200, 1400, 1200, 1600].forEach((freq, i) => {
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      o.type = "sine"; o.frequency.value = freq;
+      const t = ctx.currentTime + i * 0.12;
+      g.gain.setValueAtTime(0, t);
+      g.gain.linearRampToValueAtTime(0.5, t + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
+      o.start(t); o.stop(t + 0.28);
     });
   } catch(e) {}
 }
@@ -193,6 +210,7 @@ const style = `
   .notif-box { border-radius:28px; padding:32px 28px; width:100%; max-width:320px; text-align:center; animation:notif-in .4s cubic-bezier(.34,1.56,.64,1); box-shadow:0 24px 60px rgba(0,0,0,.4); }
   .notif-box.keuken { background:linear-gradient(135deg,#1a1a2e,#c0392b); color:white; }
   .notif-box.ober { background:linear-gradient(135deg,#1a3a1a,#155724); color:white; }
+  .notif-box.roep { background:linear-gradient(135deg,#7b2ff7,#4a0e8f); color:white; }
   .notif-emoji { font-size:4rem; margin-bottom:12px; display:block; }
   .notif-title { font-family:'Fredoka One',cursive; font-size:1.8rem; margin-bottom:8px; }
   .notif-sub { font-size:.9rem; opacity:.75; margin-bottom:6px; }
@@ -253,10 +271,12 @@ const style = `
 function NotifPopup({ notif, onClose }) {
   if (!notif) return null;
   const isKeuken = notif.type === "keuken";
+  const isRoep = notif.type === "roep_ober";
+  const klasse = isKeuken ? "keuken" : isRoep ? "roep" : "ober";
   return (
     <div className="notif-overlay" onClick={onClose}>
-      <div className={`notif-box ${isKeuken ? "keuken" : "ober"}`} onClick={e => e.stopPropagation()}>
-        <span className="notif-emoji"><span className="notif-pulse">{isKeuken ? "🔔" : "✅"}</span></span>
+      <div className={`notif-box ${klasse}`} onClick={e => e.stopPropagation()}>
+        <span className="notif-emoji"><span className="notif-pulse">{isKeuken ? "🔔" : isRoep ? "🛎️" : "✅"}</span></span>
         <div className="notif-title">{notif.titel}</div>
         <div className="notif-sub">{notif.sub}</div>
         {notif.items?.length > 0 && (
@@ -265,7 +285,7 @@ function NotifPopup({ notif, onClose }) {
           </div>
         )}
         <button className="notif-btn" onClick={onClose}>
-          {isKeuken ? "👨‍🍳 Aan de slag!" : "👍 Begrepen!"}
+          {isKeuken ? "👨‍🍳 Aan de slag!" : isRoep ? "🏃 Ik kom eraan!" : "👍 Begrepen!"}
         </button>
       </div>
     </div>
@@ -532,13 +552,44 @@ function OberScherm({ tables, menu }) {
 function KeukenScherm({ orders, tables }) {
   const actief = orders.filter(o => o.status !== "klaar");
   const klaar = orders.filter(o => o.status === "klaar");
+  const [roepBezig, setRoepBezig] = useState(false);
 
   async function updateStatus(orderId, nieuweStatus) {
     await sb.from("orders").update({ status: nieuweStatus }).eq("id", orderId);
   }
 
+  function roepOber() {
+    setRoepBezig(true);
+    emitNotif({
+      type: "roep_ober",
+      titel: "Ober gevraagd!",
+      sub: "De keuken heeft je nodig 👋",
+      items: [],
+    });
+    setTimeout(() => setRoepBezig(false), 3000);
+  }
+
   return (
     <div className="content pb">
+      {/* Roep ober knop */}
+      <button
+        className="btn slideup"
+        onClick={roepOber}
+        disabled={roepBezig}
+        style={{
+          background: roepBezig
+            ? "rgba(255,71,87,0.4)"
+            : "linear-gradient(135deg, #FF4757, #c0392b)",
+          color: "white",
+          marginBottom: 14,
+          boxShadow: "0 4px 20px rgba(255,71,87,0.4)",
+          fontSize: "1.2rem",
+          letterSpacing: 1,
+        }}
+      >
+        {roepBezig ? "✅ Ober opgeroepen!" : "🔔 Roep ober!"}
+      </button>
+
       {actief.length===0 && klaar.length===0 && (
         <div className="empty"><div className="icon">🍳</div><p>Nog geen bestellingen binnen</p></div>
       )}
@@ -1081,6 +1132,7 @@ export default function App() {
 
   // ── Notificaties ──
   const [notif, setNotif] = useState(null);
+  const [lokaleNotif, setLokaleNotif] = useState(null);
   const prevOrdersRef = useRef([]);
 
   // ── Initieel laden ──
@@ -1187,7 +1239,17 @@ export default function App() {
   }, [tables]); // tables als dep zodat tafelNummer kloppen in notifs
 
   const nieuweBestellingen = orders.filter(o => o.status==="nieuw").length;
-  const toonNotif = notif && (notif.type==="keuken" ? rol==="keuken" : rol==="ober");
+
+  // Lokale notif listener voor roep_ober
+  useEffect(() => {
+    return onNotif((n) => {
+      if (n.type === "roep_ober") speelRoepOberGeluid();
+      setLokaleNotif(n);
+    });
+  }, []);
+
+  const toonRealtimeNotif = notif && (notif.type==="keuken" ? rol==="keuken" : rol==="ober");
+  const toonLokaleNotif = lokaleNotif?.type === "roep_ober" && rol === "ober";
   const rolLabels = { ober:"🤵 Ober", keuken:"👨‍🍳 Keuken", eigenaar:"👑 Eigenaar", afrekenen:"💳 Kassa", dashboard:"📊 Dashboard" };
 
   if (loading) return (
@@ -1204,7 +1266,8 @@ export default function App() {
     <>
       <style>{style}</style>
       <div className="app">
-        {toonNotif && <NotifPopup notif={notif} onClose={() => setNotif(null)} />}
+        {toonRealtimeNotif && <NotifPopup notif={notif} onClose={() => setNotif(null)} />}
+        {toonLokaleNotif && <NotifPopup notif={lokaleNotif} onClose={() => setLokaleNotif(null)} />}
         {!rol ? (
           <Home onKiesRol={setRol} />
         ) : (
